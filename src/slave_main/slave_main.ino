@@ -1,6 +1,8 @@
+// Código do ESCRAVO
 /*Autores: 
 Leonardo Gonçalves
 Lucas Mantuan Ayres
+Pablo France Salarolli
 */
 
 void setup() {
