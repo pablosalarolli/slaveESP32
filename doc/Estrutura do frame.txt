@@ -1,0 +1,43 @@
+O frame será composto por 4 bytes: Cabeçalho, Dado_A, Dado_B e Checksum
+
+|_ _ _ _._ _ _ _||_ _ _ _._ _ _ _||_ _ _ _._ _ _ _||_ _ _ _._ _ _ _|
+    Cabeçalho          Dado_A            Dado_B          Checksum
+
+------------------------------------------------ Cabeçalho ------------------------------------------------
+
+O cabeçalho é o byte responsável por carregar informações de endereço de destino (ADDR) e código da operação (OP_CODE)
+	-Descrição bit a bit
+
+		|7 6 5 4 .3 2 1 0| Byte do cabeçalho
+
+		Os quatro bits mais signiicativos são referentes ao endereço do dispositivo de destino.
+		|7 6 5 4| -> ADDR
+			-0000 - MESTRE
+			-0001 - Escravo 1
+			-0010 - Escravo 2
+
+		Os quatro bits menos signiicativos são referentes ao código da operação referente à mensagem enviada.
+		|3 2 1 0| -> OP_CODE
+			-0000 - Desliga/Liga escravo
+			-0001 - Checar estado do escravo
+			-0010 - Atualiza Set Point
+			-0011 - Define Sensor utilizado no escravo
+			-0100 - Solicita medição
+
+--------------------------------------------------- Dado --------------------------------------------------
+
+O dado enviado é representado por uma palavra de 16 bits e é composto por 2 bytes: Dado_A e Dado_B. O Dado_A é o byte mais significante, enquanto o Dado_B é o byte menos significante.
+O dado ifinal é da forma:
+
+       bit 15			      bit 0
+	 |				|
+	 v				v
+	|_ _ _ _._ _ _ _||_ _ _ _._ _ _ _|
+	      Dado_A            Dado_B
+
+------------------------------------------------ Checksum -------------------------------------------------
+
+O último byte carrega o checksum, para verificação de erros.
+
+
+
