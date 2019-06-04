@@ -18,3 +18,33 @@ void loop() { //Choose Serial1 or Serial2 as required
   }
   digitalWrite(2,0);
 }
+
+void enviaMensagem(byte addr, byte opcode, int dado){
+  byte cabecalho, dadoA, dadoB, checksum;
+  cabecalho = montaCabecalho(addr, opcode);  
+  divideDado(dado, &dadoA, &dadoB);
+  checksum = geraChecksum(cabecalho, dadoA, dadoB);
+  Serial2.write(cabecalho);
+  Serial2.write(dadoA);
+  Serial2.write(dadoB);
+  Serial2.write(checksum);
+}
+
+byte montaCabecalho(byte addr, byte opcode){
+  return (byte)(((addr & 0x0F) << 4) | (opcode & 0x0F));
+}
+
+void divideDado(int dado, byte* dadoA, byte* dadoB){
+  *dadoA = (dado & 0xFF00) >> 8;
+  *dadoB = dado & 0x00FF;
+}
+
+byte geraChecksum(byte cabecalho,byte dadoA, byte dadoB){
+  int soma = 0, wrappsoma = 0;
+  byte checksum = 0;
+  soma = cabecalho+dadoA+dadoB;
+  wrappsoma = soma >> 8;
+  wrappsoma = wrappsoma+(soma & 0xFF);
+  checksum = ~wrappsoma;
+  return checksum;
+}
