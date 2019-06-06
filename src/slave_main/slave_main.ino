@@ -23,6 +23,16 @@
 #define TX_PIN 17
 #define SERIAL_CTRL 2
 
+/*================================ COMUNICAÇÃO ESP-32 - TRASNCEIVER TTL RS-485 ================================*/
+
+//A UART’s main purpose is to transmit and receive serial data. Introduction to UART  Communication In UART communication, two UARTs communicate directly with each other
+//Data flows from the Tx pin of the transmitting UART to the Rx pin of the receiving UART.
+//UARTs transmit data asynchronously, which means there is no clock signal to synchronize the output of bits from the transmitting UART to the sampling of bits by the receiving UART. 
+//Instead of a clock signal, the transmitting UART adds start and stop bits to the data packet being transferred. 
+//These bits define the beginning and end of the data packet so the receiving UART knows when to start reading the bits. 
+//When the receiving UART detects a start bit, it starts to read the incoming bits at a specific frequency known as the baud rate. 
+//Baud rate is a measure of the speed of data transfer, expressed in bits per second (bps).
+
 /*================================ TYPE DEFS ================================*/
 
 enum slaveStates {
