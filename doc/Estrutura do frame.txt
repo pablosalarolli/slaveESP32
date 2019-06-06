@@ -18,11 +18,12 @@ O cabeçalho é o byte responsável por carregar informações de endereço de destino
 
 		Os quatro bits menos signiicativos são referentes ao código da operação referente à mensagem enviada.
 		|3 2 1 0| -> OP_CODE
-			-0000 - Desliga/Liga escravo
-			-0001 - Checar estado do escravo
-			-0010 - Atualiza Set Point
-			-0011 - Define Sensor utilizado no escravo
+			-0000 - Atualiza SP do escravo
+			-0001 - Verifica SP do escravo
+			-0010 - Atualiza Sensor utilizado no escravo
+			-0011 - Verifica Sensor utilizado no escravo
 			-0100 - Solicita medição
+			-0101 - Ler buffer de erros
 
 --------------------------------------------------- Dado --------------------------------------------------
 
