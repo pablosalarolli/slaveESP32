@@ -54,4 +54,7 @@ Saídas: retorna o dado completo com 16 bits
 */
 int montaDado(byte dadoA, byte dadoB);
 
+
+void Serial2flush(void);
+
 #endif

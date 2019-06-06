@@ -75,6 +75,7 @@ int recebeMensagem(byte *addr, byte *opcode, int *dado){
     i++;
   }
   if(flag){
+	Serial2flush();
     return flag;
   }
   cabecalho = buff[0];
@@ -106,4 +107,11 @@ Saídas: retorna o dado completo com 16 bits
 */
 int montaDado(byte dadoA, byte dadoB){
   return int(((dadoA & 0x00FF) << 8) | (dadoB & 0x00FF));
+}
+
+
+void Serial2flush(void){
+	while(Serial2.available() > 0) {
+		char t = Serial2.read();
+	}
 }
