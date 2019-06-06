@@ -15,7 +15,7 @@
 #define PIN_LM35 14
 
 #define LED_ON 23
-#define LED_BARRAMENTO 22 
+#define LED_BARRAMENTO 22
 #define LED_SENSOR 19
 #define LED_SPVP 18
 
@@ -114,6 +114,8 @@ void loop() {
     //      break;
 
     default:
+      flag = 4;
+      estado = ATUALIZA_BUFFER_ERRO;
       break;
   }
 
@@ -160,8 +162,8 @@ enum slaveStates trataMSG() {
 }
 
 int lerSensor(int sensor) {
-  if(sensor)
-  return analogRead(PIN_420);
+  if (sensor)
+    return analogRead(PIN_420);
   else
-  return analogRead(PIN_LM35);
+    return analogRead(PIN_LM35);
 }
