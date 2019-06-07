@@ -34,18 +34,19 @@
 //Baud rate is a measure of the speed of data transfer, expressed in bits per second (bps).
 
 /*================================ TYPE DEFS ================================*/
-
+//Por padrão, o primeiro enumerador tem o valor 0 e o valor de cada enumerador seguinte é aumentado em 1. 
+//Por exemplo, na seguinte enumeração, AGUARDANDO é 0, RECEBE_MSG é 1, ATUALIZA_SP é 2 e assim por diante.
 enum slaveStates {
-  AGUARDANDO,             // Estado ligado, aguardando chegada de um frame
-  RECEBE_MSG,             // Estado responsável por tratar a mensagem recebida
-  ATUALIZA_SP,            // Estado que atualiza o valor do set-point no escravo
-  VERIFICA_SP,            // Estado que verifica o valor do set-point no escravo
-  ATUALIA_SENSOR,         // Estado que atualiza qual sensor usado no escravo
-  VERIFICA_SENSOR,        // Estado que verifica qual sensor usado no escravo
-  LER_SENSOR,             // Estado que efetua a medição do sensor
-  RESPONDE,               // Estado que responde ao mestre
-  ATUALIZA_BUFFER_ERRO,   // Estado que atualiza o buffer de erros com a flag
-  VERIFICA_BUFFER_ERRO    // Estado que verifica o buffer de erros com a flag
+  AGUARDANDO,              // Estado ligado, aguardando chegada de um frame
+  RECEBE_MSG,              // Estado responsável por tratar a mensagem recebida
+  ATUALIZA_SP,             // Estado que atualiza o valor do set-point no escravo
+  VERIFICA_SP,             // Estado que verifica o valor do set-point no escravo
+  ATUALIZA_SENSOR,         // Estado que atualiza qual sensor usado no escravo
+  VERIFICA_SENSOR,         // Estado que verifica qual sensor usado no escravo
+  LER_SENSOR,              // Estado que efetua a medição do sensor
+  RESPONDE,                // Estado que responde ao mestre
+  ATUALIZA_BUFFER_ERRO,    // Estado que atualiza o buffer de erros com a flag
+  VERIFICA_BUFFER_ERRO     // Estado que verifica o buffer de erros com a flag
 };
 
 /*========================== VARIÁVEIS DO PROTOCOLO =========================*/
@@ -60,25 +61,25 @@ int dado = 0, flag = 0;
 int set_point = 40;
 int sensor = 0; // 0 = 4-20 mA, 1 = LM35
 int buffer_erro[10];
-enum slaveStates estado = AGUARDANDO;
+enum slaveStates estado = AGUARDANDO; // 'estado' é objeto da variável enum slaveStates //AGUARDANDO=0
 
 /*============================== SETUP E LOOP ===============================*/
 
 void setup() {
   // Note the format for setting a serial port is as follows: Serial2.begin(baud-rate, protocol, RX pin, TX pin);
-  Serial2.begin(115200, SERIAL_8N1, 16, 17);
-  Serial.begin(115200);
+  Serial2.begin(115200, SERIAL_8N1, 16, 17);  // Inicia comunicação serial entre porta UART U2 e transceiver
+  Serial.begin(115200);                       // Inicia comunicação serial USB
 }
 
 void loop() {
   switch (estado) {
     case AGUARDANDO:
-      if (Serial2.available())
-        estado = RECEBE_MSG;
+      if (Serial2.available())      // Se a comunicação entre UART U2 e transceiver estiver acontecendo
+        estado = RECEBE_MSG;        // é atribuído RECEBE_MSG ao objeto estado
       break;
 
     case RECEBE_MSG:
-      flag = recebeMensagem(&addr, &opcode, &dado);
+      flag = recebeMensagem(&addr, &opcode, &dado);     
       if (flag)
         estado = ATUALIZA_BUFFER_ERRO;
       else
@@ -90,7 +91,7 @@ void loop() {
       estado = AGUARDANDO;
       break;
 
-    case ATUALIA_SENSOR:
+    case ATUALIZA_SENSOR:
       sensor = dado;
       estado = AGUARDANDO;
       break;
@@ -151,7 +152,7 @@ enum slaveStates trataMSG() {
       estado = VERIFICA_SP;
       break;
     case 0b0010:
-      estado = ATUALIA_SENSOR;
+      estado = ATUALIZA_SENSOR;
       break;
     case 0b0011:
       estado = VERIFICA_SENSOR;
