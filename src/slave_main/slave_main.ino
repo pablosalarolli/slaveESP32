@@ -18,6 +18,7 @@
 #define LED_BARRAMENTO 22
 #define LED_SENSOR 19
 #define LED_SPVP 18
+#define HISTERESE 1
 
 #define RX_PIN 16
 #define TX_PIN 17
@@ -43,6 +44,7 @@ enum slaveStates {
   ATUALIA_SENSOR,         // Estado que atualiza qual sensor usado no escravo
   VERIFICA_SENSOR,        // Estado que verifica qual sensor usado no escravo
   LER_SENSOR,             // Estado que efetua a medição do sensor
+  COMPARA_VPSP,           // Estado que compara VP com SP
   RESPONDE,               // Estado que responde ao mestre
   ATUALIZA_BUFFER_ERRO,   // Estado que atualiza o buffer de erros com a flag
   VERIFICA_BUFFER_ERRO    // Estado que verifica o buffer de erros com a flag
@@ -61,6 +63,8 @@ int set_point = 40;
 int sensor = 0; // 0 = 4-20 mA, 1 = LM35
 int buffer_erro[10];
 enum slaveStates estado = AGUARDANDO;
+const long dt = 1000;
+unsigned long tAnt = 0;
 
 /*============================== SETUP E LOOP ===============================*/
 
@@ -73,8 +77,15 @@ void setup() {
 void loop() {
   switch (estado) {
     case AGUARDANDO:
+    
       if (Serial2.available())
         estado = RECEBE_MSG;
+        
+      unsigned long tAgora = millis();
+      if ((tAgora - tAnt) >= dt) {
+        tAnt = tAgora;
+        estado = COMPARA_VPSP;
+      }
       break;
 
     case RECEBE_MSG:
@@ -108,6 +119,11 @@ void loop() {
     case LER_SENSOR:
       // ler o sensor dado = lerSensor(sensor);
       estado = RESPONDE;
+      break;
+
+    case COMPARA_VPSP:
+      digitalWrite(LED_SPVP, atingiuSP());
+      estado = AGUARDANDO;
       break;
 
     case RESPONDE:
@@ -176,4 +192,12 @@ int lerSensor(int sensor) {
     return analogRead(PIN_420);
   else
     return analogRead(PIN_LM35);
+}
+
+bool atingiuSP(void) {
+  int VP = lerSensor(sensor);
+  if ((VP < (set_point + HISTERESE)) && (VP > (set_point - HISTERESE)))
+    return 1;
+  else
+    return 0;
 }
