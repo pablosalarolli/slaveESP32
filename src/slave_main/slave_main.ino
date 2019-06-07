@@ -70,8 +70,8 @@ unsigned long tAnt = 0;
 
 void setup() {
   // Note the format for setting a serial port is as follows: Serial2.begin(baud-rate, protocol, RX pin, TX pin);
-  Serial2.begin(115200, SERIAL_8N1, 16, 17);
-  Serial.begin(115200);
+  Serial2.begin(115200, SERIAL_8N1, 16, 17);    // Inicia comunicação serial entre porta UART U2 e transceiver
+  Serial.begin(115200);                         // Inicia comunicação serial USB
 
   pinMode(LED_ON, OUTPUT);
   pinMode(LED_BARRAMENTO, OUTPUT);
@@ -83,8 +83,8 @@ void loop() {
   switch (estado) {
     case AGUARDANDO:
 
-      if (Serial2.available())
-        estado = RECEBE_MSG;
+      if (Serial2.available())                  // Se a comunicação entre UART U2 e transceiver estiver acontecendo
+        estado = RECEBE_MSG;                    // é atribuído RECEBE_MSG ao objeto estado
 
       unsigned long tAgora = millis();
       if ((tAgora - tAnt) >= dt) {
