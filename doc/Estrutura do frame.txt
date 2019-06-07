@@ -12,7 +12,7 @@ O cabeçalho é o byte responsável por carregar informações de endereço de destino
 
 		Os quatro bits mais signiicativos são referentes ao endereço do dispositivo de destino.
 		|7 6 5 4| -> ADDR
-			-0000 - MESTRE
+			-1111 - MESTRE
 			-0001 - Escravo 1
 			-0010 - Escravo 2
 
