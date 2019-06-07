@@ -86,8 +86,8 @@ int recebeMensagem(byte *addr, byte *opcode, int *dado){
   dadoA = buff[1];                  //byte mais significativo do dado> 2º byte
   dadoB = buff[2];                  //byte menos significativo do dado > 3º byte
   checksum = buff[3];               //checksum > 4º byte
-  if(geraChecksum(cabecalho + dadoA + dadoB + checksum)){
-    flag = 2;
+  if(geraChecksum(cabecalho + dadoA + dadoB + checksum)){   //Se checksum diferente de 0  
+    flag = 2;                                               //A flag de erro de checksum é acionada
     return flag;
   }
   divideCabecalho(cabecalho, addr, opcode); //Já são ponteiros, por isso a não necessidade de endereçar (&addr,&opcode)
