@@ -79,13 +79,13 @@ int recebeMensagem(byte *addr, byte *opcode, int *dado){
     i++;
   }
   if(flag){
-	Serial2flush();
-    return flag;
+	Serial2flush();                   //Esvazia o buffer do serial
+    return flag;                    //retorna flag
   }
-  cabecalho = buff[0];
-  dadoA = buff[1];
-  dadoB = buff[2];
-  checksum = buff[3];
+  cabecalho = buff[0];              //cabeçalho > 1º byte
+  dadoA = buff[1];                  //byte mais significativo do dado> 2º byte
+  dadoB = buff[2];                  //byte menos significativo do dado > 3º byte
+  checksum = buff[3];               //checksum > 4º byte
   if(geraChecksum(cabecalho + dadoA + dadoB + checksum)){
     flag = 2;
     return flag;
