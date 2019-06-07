@@ -41,7 +41,7 @@ enum slaveStates {
   RECEBE_MSG,             // Estado responsável por tratar a mensagem recebida
   ATUALIZA_SP,            // Estado que atualiza o valor do set-point no escravo
   VERIFICA_SP,            // Estado que verifica o valor do set-point no escravo
-  ATUALIA_SENSOR,         // Estado que atualiza qual sensor usado no escravo
+  ATUALIZA_SENSOR,         // Estado que atualiza qual sensor usado no escravo
   VERIFICA_SENSOR,        // Estado que verifica qual sensor usado no escravo
   LER_SENSOR,             // Estado que efetua a medição do sensor
   COMPARA_VPSP,           // Estado que compara VP com SP
@@ -94,19 +94,19 @@ void loop() {
       break;
 
     case RECEBE_MSG:
-      flag = recebeMensagem(&addr, &opcode, &dado);
-      if (flag)
-        estado = ATUALIZA_BUFFER_ERRO;
-      else
-        estado = trataMSG();
+      flag = recebeMensagem(&addr, &opcode, &dado);     // Análise da mensagem recebida (retorna addr, opcode, dado e flag)
+      if (flag)                                         // Se houver alguma flag de erro na mensagem:
+        estado = ATUALIZA_BUFFER_ERRO;                  // é atribuído ATUALIZA_BUFFER_ERRO ao objeto estado 
+      else                                              // Se não há erro na mensagem:
+        estado = trataMSG();                            // Ocorre o tratamento da mensagem recebida (atribui ao 'estado' a operação que será realizada)
       break;
 
-    case ATUALIZA_SP:
+    case ATUALIZA_SP:                                   // Se estado
       set_point = dado;
       estado = AGUARDANDO;
       break;
 
-    case ATUALIA_SENSOR:
+    case ATUALIZA_SENSOR:
       sensor = dado;
       estado = AGUARDANDO;
       break;
@@ -174,7 +174,7 @@ enum slaveStates trataMSG() {
       estado = VERIFICA_SP;
       break;
     case 0b0010:
-      estado = ATUALIA_SENSOR;
+      estado = ATUALIZA_SENSOR;
       break;
     case 0b0011:
       estado = VERIFICA_SENSOR;
@@ -186,7 +186,7 @@ enum slaveStates trataMSG() {
       estado = VERIFICA_BUFFER_ERRO;
       break;
     default:
-      flag = 3;
+      flag = 3; //Erro de opcode inválido
       estado = ATUALIZA_BUFFER_ERRO;
       break;
   }
