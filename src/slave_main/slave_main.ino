@@ -28,10 +28,10 @@
 
 //A UART’s main purpose is to transmit and receive serial data. Introduction to UART  Communication In UART communication, two UARTs communicate directly with each other
 //Data flows from the Tx pin of the transmitting UART to the Rx pin of the receiving UART.
-//UARTs transmit data asynchronously, which means there is no clock signal to synchronize the output of bits from the transmitting UART to the sampling of bits by the receiving UART. 
-//Instead of a clock signal, the transmitting UART adds start and stop bits to the data packet being transferred. 
-//These bits define the beginning and end of the data packet so the receiving UART knows when to start reading the bits. 
-//When the receiving UART detects a start bit, it starts to read the incoming bits at a specific frequency known as the baud rate. 
+//UARTs transmit data asynchronously, which means there is no clock signal to synchronize the output of bits from the transmitting UART to the sampling of bits by the receiving UART.
+//Instead of a clock signal, the transmitting UART adds start and stop bits to the data packet being transferred.
+//These bits define the beginning and end of the data packet so the receiving UART knows when to start reading the bits.
+//When the receiving UART detects a start bit, it starts to read the incoming bits at a specific frequency known as the baud rate.
 //Baud rate is a measure of the speed of data transfer, expressed in bits per second (bps).
 
 /*================================ TYPE DEFS ================================*/
@@ -64,7 +64,7 @@ int sensor = 0; // 0 = 4-20 mA, 1 = LM35
 int buffer_erro[10];
 enum slaveStates estado = AGUARDANDO;
 const long dt = 1000;
-unsigned long tAnt = 0;
+unsigned long tAnt = 0, tAgora = 0;
 
 /*============================== SETUP E LOOP ===============================*/
 
@@ -86,7 +86,7 @@ void loop() {
       if (Serial2.available())                  // Se a comunicação entre UART U2 e transceiver estiver acontecendo
         estado = RECEBE_MSG;                    // é atribuído RECEBE_MSG ao objeto estado
 
-      unsigned long tAgora = millis();
+      tAgora = millis();
       if ((tAgora - tAnt) >= dt) {
         tAnt = tAgora;
         estado = COMPARA_VPSP;
@@ -96,7 +96,7 @@ void loop() {
     case RECEBE_MSG:
       flag = recebeMensagem(&addr, &opcode, &dado);     // Análise da mensagem recebida (retorna addr, opcode, dado e flag)
       if (flag)                                         // Se houver alguma flag de erro na mensagem:
-        estado = ATUALIZA_BUFFER_ERRO;                  // é atribuído ATUALIZA_BUFFER_ERRO ao objeto estado 
+        estado = ATUALIZA_BUFFER_ERRO;                  // é atribuído ATUALIZA_BUFFER_ERRO ao objeto estado
       else                                              // Se não há erro na mensagem:
         estado = trataMSG();                            // Ocorre o tratamento da mensagem recebida (atribui ao 'estado' a operação que será realizada)
       break;
