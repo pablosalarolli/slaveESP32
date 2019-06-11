@@ -4,7 +4,7 @@
   Lucas Mantuan Ayres
   Pablo France Salarolli
 */
-#include "gainProtocol.h"
+#include "gainProtocolSlave.h"
 
 /*================================ CONSTANTES ===============================*/
 
@@ -70,6 +70,8 @@ unsigned long tAnt = 0, tAgora = 0;
 /*============================== SETUP E LOOP ===============================*/
 
 void setup() {
+  pinMode(MAX485_RE_NEG, OUTPUT);
+  habilitaReceberDoBarramento();
   // Note the format for setting a serial port is as follows: Serial2.begin(baud-rate, protocol, RX pin, TX pin);
   Serial2.begin(115200, SERIAL_8N1, 16, 17);    // Inicia comunicação serial entre porta UART U2 e transceiver
   Serial.begin(115200);                         // Inicia comunicação serial USB

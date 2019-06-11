@@ -1,4 +1,4 @@
-﻿#include "gainProtocol.h"
+﻿#include "gainProtocolSlave.h"
 
 /* enviaMensagem: envia uma mensagem completa do nosso protocolo
 Entradas: endereço de destino (addr), código da operação (opcode) e o dado (dado)
@@ -9,10 +9,12 @@ void enviaMensagem(byte addr, byte opcode, int dado){
   cabecalho = montaCabecalho(addr, opcode);  
   divideDado(dado, &dadoA, &dadoB);
   checksum = geraChecksum(cabecalho + dadoA + dadoB);
+  habilitaTransmitirNoBarramento();
   Serial2.write(cabecalho);
   Serial2.write(dadoA);
   Serial2.write(dadoB);
   Serial2.write(checksum);
+  habilitaReceberDoBarramento();
 }
 
 /* montaCabecalho: monta o cabeçalho (1 byte) a partir dos nibbles addr e opcode
@@ -122,3 +124,10 @@ void Serial2flush(void){
 		char t = Serial2.read();
 	}
 }
+
+void habilitaTransmitirNoBarramento(void) {
+  digitalWrite(MAX485_RE_NEG, HIGH);
+}
+
+void habilitaReceberDoBarramento(void) {
+  digitalWrite(MAX485_RE_NEG, LOW);

@@ -1,7 +1,8 @@
-﻿#ifndef _GAINPROTOCOL_H
-#define _GAINPROTOCOL_H
+﻿#ifndef _GAINPROTOCOLSLAVE_H
+#define _GAINPROTOCOLSLAVE_H
 
 #include <Arduino.h>
+#define MAX485_RE_NEG 4 // Pino RE negado e DE, 0 = Receber, 1 = Transmitir
 
 /* enviaMensagem: envia uma mensagem completa do nosso protocolo
 Entradas: endereço de destino (addr), código da operação (opcode) e o dado (dado)
@@ -59,5 +60,9 @@ Entradas: ---
 Saídas: ---
 */
 void Serial2flush(void);
+
+void habilitaTransmitirNoBarramento(void);
+
+void habilitaReceberDoBarramento(void);
 
 #endif
