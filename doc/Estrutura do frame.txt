@@ -26,6 +26,10 @@ O cabeçalho é o byte responsável por carregar informações de endereço de destino
 			-0101 - Ler buffer de erros
 			-0110 - Verifica se VP = SP
 
+			-1101 - Aquisição continua de VP
+			-1110 - Atualiza o timeout
+			-1111 - Atualiza o tempo de atualização dt do master
+
 --------------------------------------------------- Dado --------------------------------------------------
 
 O dado enviado é representado por uma palavra de 16 bits e é composto por 2 bytes: Dado_A e Dado_B. O Dado_A é o byte mais significante, enquanto o Dado_B é o byte menos significante.
