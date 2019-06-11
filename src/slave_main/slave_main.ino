@@ -122,7 +122,8 @@ void loop() {
       break;
 
     case LER_SENSOR:
-      // ler o sensor dado = lerSensor(sensor);
+      // ler o sensor
+      dado = lerSensor(sensor);
       estado = RESPONDE;
       break;
 
