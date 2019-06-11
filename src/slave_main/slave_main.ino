@@ -44,7 +44,8 @@ enum slaveStates {
   ATUALIZA_SENSOR,         // Estado que atualiza qual sensor usado no escravo
   VERIFICA_SENSOR,        // Estado que verifica qual sensor usado no escravo
   LER_SENSOR,             // Estado que efetua a medição do sensor
-  COMPARA_VPSP,           // Estado que compara VP com SP
+  COMPARA_VPSP,           // Estado que compara VP com SP e atualiza o LED
+  VERIFICA_VPSP,          // Estado que compara VP com SP dada uma solicitação do mestre
   RESPONDE,               // Estado que responde ao mestre
   ATUALIZA_BUFFER_ERRO,   // Estado que atualiza o buffer de erros com a flag
   VERIFICA_BUFFER_ERRO    // Estado que verifica o buffer de erros com a flag
@@ -122,7 +123,6 @@ void loop() {
       break;
 
     case LER_SENSOR:
-      // ler o sensor
       dado = lerSensor(sensor);
       estado = RESPONDE;
       break;
@@ -130,6 +130,11 @@ void loop() {
     case COMPARA_VPSP:
       digitalWrite(LED_SPVP, atingiuSP());
       estado = AGUARDANDO;
+      break;
+
+    case VERIFICA_VPSP:
+      dado = int(atingiuSP());
+      estado = RESPONDE;
       break;
 
     case RESPONDE:
@@ -185,6 +190,9 @@ enum slaveStates trataMSG() {
       break;
     case 0b0101:
       estado = VERIFICA_BUFFER_ERRO;
+      break;
+    case 0b0110:
+      estado = VERIFICA_VPSP;
       break;
     default:
       flag = 3; //Erro de opcode inválido

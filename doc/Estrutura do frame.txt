@@ -24,6 +24,7 @@ O cabeçalho é o byte responsável por carregar informações de endereço de destino
 			-0011 - Verifica Sensor utilizado no escravo
 			-0100 - Solicita medição
 			-0101 - Ler buffer de erros
+			-0110 - Verifica se VP = SP
 
 --------------------------------------------------- Dado --------------------------------------------------
 
