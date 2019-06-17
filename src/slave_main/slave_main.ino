@@ -8,7 +8,7 @@
 
 /*================================ CONSTANTES ===============================*/
 
-#define MEU_ADDR 0x01
+#define MEU_ADDR 1
 #define MASTER_ADDR 0x0F
 
 #define PIN_420 12
@@ -60,7 +60,7 @@ int dado = 0, flag = 0;
 /*=========================== VARIÁVEIS DO ESCRAVO ==========================*/
 
 //Variáveis internas do escravo
-int set_point = 40;
+int set_point = 0;
 int sensor = 0; // 0 = 4-20 mA, 1 = LM35
 int buffer_erro[10];
 enum slaveStates estado = AGUARDANDO;
@@ -73,7 +73,7 @@ void setup() {
   pinMode(MAX485_RE_NEG, OUTPUT);
   habilitaReceberDoBarramento();
   // Note the format for setting a serial port is as follows: Serial2.begin(baud-rate, protocol, RX pin, TX pin);
-  Serial2.begin(115200, SERIAL_8N1, 16, 17);    // Inicia comunicação serial entre porta UART U2 e transceiver
+  Serial2.begin(9600, SERIAL_8N1, RX_PIN, TX_PIN);    // Inicia comunicação serial entre porta UART U2 e transceiver
   Serial.begin(115200);                         // Inicia comunicação serial USB
 
   pinMode(LED_ON, OUTPUT);
@@ -85,7 +85,7 @@ void setup() {
 void loop() {
   switch (estado) {
     case AGUARDANDO:
-
+      Serial.println("Estado: AGUARDANDO");
       if (Serial2.available())                  // Se a comunicação entre UART U2 e transceiver estiver acontecendo
         estado = RECEBE_MSG;                    // é atribuído RECEBE_MSG ao objeto estado
 
@@ -97,67 +97,90 @@ void loop() {
       break;
 
     case RECEBE_MSG:
+      Serial.println("Estado: RECEBE_MSG");
       flag = recebeMensagem(&addr, &opcode, &dado);     // Análise da mensagem recebida (retorna addr, opcode, dado e flag)
+      Serial.print("flag");
+      Serial.println(flag, HEX);
+
+      Serial.print("addr");
+      Serial.println(addr, HEX);
+
+      Serial.print("opcode");
+      Serial.println(opcode, HEX);
+
+      Serial.print("dado");
+      Serial.println(dado, HEX);
       if (flag)                                         // Se houver alguma flag de erro na mensagem:
         estado = ATUALIZA_BUFFER_ERRO;                  // é atribuído ATUALIZA_BUFFER_ERRO ao objeto estado
       else                                              // Se não há erro na mensagem:
-        estado = trataMSG();                            // Ocorre o tratamento da mensagem recebida (atribui ao 'estado' a operação que será realizada)
+        trataMSG();                            // Ocorre o tratamento da mensagem recebida (atribui ao 'estado' a operação que será realizada)
       break;
 
     case ATUALIZA_SP:                                   // Se estado
+      Serial.println("Estado: ATUALIZA_SP");
       set_point = dado;
       estado = AGUARDANDO;
       break;
 
     case ATUALIZA_SENSOR:
+      Serial.println("Estado: ATUALIZA_SENSOR");
       sensor = dado;
       estado = AGUARDANDO;
       break;
 
     case VERIFICA_SP:
+      Serial.println("Estado: VERIFICA_SP");
       dado = set_point;
       estado = RESPONDE;
       break;
 
     case VERIFICA_SENSOR:
+      Serial.println("Estado: VERIFICA_SENSOR");
       dado = sensor;
       estado = RESPONDE;
       break;
 
     case LER_SENSOR:
+      Serial.println("Estado: LER_SENSOR");
       dado = lerSensor(sensor);
       estado = RESPONDE;
       break;
 
     case COMPARA_VPSP:
+      Serial.println("Estado: COMPARA_VPSP");
       digitalWrite(LED_SPVP, atingiuSP());
       estado = AGUARDANDO;
       break;
 
     case VERIFICA_VPSP:
+      Serial.println("Estado: VERIFICA_VPSP");
       dado = int(atingiuSP());
       estado = RESPONDE;
       break;
 
     case RESPONDE:
+      Serial.println("Estado: RESPONDE");
       enviaMensagem(MASTER_ADDR, opcode, dado);
       estado = AGUARDANDO;
       break;
 
     case ATUALIZA_BUFFER_ERRO:
+      Serial.println("Estado: ATUALIZA_BUFFER_ERRO");
       estado = AGUARDANDO; // ainda não implementado
       break;
 
     case VERIFICA_BUFFER_ERRO:
+      Serial.println("Estado: VERIFICA_BUFFER_ERRO");
       estado = AGUARDANDO; // ainda não implementado
       break;
 
     default:
+      Serial.println("Estado: DEFAULT");
       flag = 4;
       estado = ATUALIZA_BUFFER_ERRO;
       break;
   }
-
+  delay(100);
 
   //  Serial.print("flag ");
   //  Serial.println(flag, DEC);
@@ -171,9 +194,9 @@ void loop() {
 
 /*=========================== FUNCOES AUXILIARES ============================*/
 
-enum slaveStates trataMSG() {
+void trataMSG() {
   if (addr != MEU_ADDR)
-    return AGUARDANDO;
+    estado = AGUARDANDO;
   switch (opcode) {
     case 0b0000:
       estado = ATUALIZA_SP;
@@ -207,7 +230,7 @@ int lerSensor(int sensor) {
   if (sensor)
     return analogRead(PIN_420);
   else
-    return analogRead(PIN_LM35);
+    return int(analogRead(PIN_LM35)*(330/2048.0));
 }
 
 bool atingiuSP(void) {

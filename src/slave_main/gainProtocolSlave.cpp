@@ -14,6 +14,8 @@ void enviaMensagem(byte addr, byte opcode, int dado){
   Serial2.write(dadoA);
   Serial2.write(dadoB);
   Serial2.write(checksum);
+  Serial2.flush();
+  delayMicroseconds(100);
   habilitaReceberDoBarramento();
 }
 
@@ -127,7 +129,9 @@ void Serial2flush(void){
 
 void habilitaTransmitirNoBarramento(void) {
   digitalWrite(MAX485_RE_NEG, HIGH);
+  delayMicroseconds(10);
 }
 
 void habilitaReceberDoBarramento(void) {
   digitalWrite(MAX485_RE_NEG, LOW);
+}
