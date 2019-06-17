@@ -195,34 +195,36 @@ void loop() {
 /*=========================== FUNCOES AUXILIARES ============================*/
 
 void trataMSG() {
-  if (addr != MEU_ADDR)
+  if ((addr != MEU_ADDR) || (addr == MASTER_ADDR))
     estado = AGUARDANDO;
-  switch (opcode) {
-    case 0b0000:
-      estado = ATUALIZA_SP;
-      break;
-    case 0b0001:
-      estado = VERIFICA_SP;
-      break;
-    case 0b0010:
-      estado = ATUALIZA_SENSOR;
-      break;
-    case 0b0011:
-      estado = VERIFICA_SENSOR;
-      break;
-    case 0b0100:
-      estado = LER_SENSOR;
-      break;
-    case 0b0101:
-      estado = VERIFICA_BUFFER_ERRO;
-      break;
-    case 0b0110:
-      estado = VERIFICA_VPSP;
-      break;
-    default:
-      flag = 3; //Erro de opcode inválido
-      estado = ATUALIZA_BUFFER_ERRO;
-      break;
+  else {
+    switch (opcode) {
+      case 0b0000:
+        estado = ATUALIZA_SP;
+        break;
+      case 0b0001:
+        estado = VERIFICA_SP;
+        break;
+      case 0b0010:
+        estado = ATUALIZA_SENSOR;
+        break;
+      case 0b0011:
+        estado = VERIFICA_SENSOR;
+        break;
+      case 0b0100:
+        estado = LER_SENSOR;
+        break;
+      case 0b0101:
+        estado = VERIFICA_BUFFER_ERRO;
+        break;
+      case 0b0110:
+        estado = VERIFICA_VPSP;
+        break;
+      default:
+        flag = 3; //Erro de opcode inválido
+        estado = ATUALIZA_BUFFER_ERRO;
+        break;
+    }
   }
 }
 
@@ -230,7 +232,7 @@ int lerSensor(int sensor) {
   if (sensor)
     return analogRead(PIN_420);
   else
-    return int(analogRead(PIN_LM35)*(330/2048.0));
+    return int(analogRead(PIN_LM35) * (330 / 2048.0));
 }
 
 bool atingiuSP(void) {
