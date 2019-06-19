@@ -8,7 +8,7 @@
 
 /*================================ CONSTANTES ===============================*/
 
-#define MEU_ADDR 1
+#define MEU_ADDR 0x02
 #define MASTER_ADDR 0x0F
 
 #define PIN_420 12
@@ -60,8 +60,8 @@ int dado = 0, flag = 0;
 /*=========================== VARIÁVEIS DO ESCRAVO ==========================*/
 
 //Variáveis internas do escravo
-int set_point = 0;
-int sensor = 0; // 0 = 4-20 mA, 1 = LM35
+int set_point = 30;
+int sensor = 0; // 0 = LM35, 1 = 4-20 mA
 int buffer_erro[10];
 enum slaveStates estado = AGUARDANDO;
 const long dt = 1000;
@@ -85,7 +85,7 @@ void setup() {
 void loop() {
   switch (estado) {
     case AGUARDANDO:
-      Serial.println("Estado: AGUARDANDO");
+//      Serial.println("Estado: AGUARDANDO");
       if (Serial2.available())                  // Se a comunicação entre UART U2 e transceiver estiver acontecendo
         estado = RECEBE_MSG;                    // é atribuído RECEBE_MSG ao objeto estado
 
@@ -180,7 +180,7 @@ void loop() {
       estado = ATUALIZA_BUFFER_ERRO;
       break;
   }
-  delay(100);
+  delay(10);
 
   //  Serial.print("flag ");
   //  Serial.println(flag, DEC);
@@ -237,7 +237,7 @@ int lerSensor(int sensor) {
 
 bool atingiuSP(void) {
   int VP = lerSensor(sensor);
-  if ((VP < (set_point + HISTERESE)) && (VP > (set_point - HISTERESE)))
+  if ((VP <= (set_point + HISTERESE)) && (VP >= (set_point - HISTERESE)))
     return 1;
   else
     return 0;
