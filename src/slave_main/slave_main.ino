@@ -8,7 +8,7 @@
 
 /*================================ CONSTANTES ===============================*/
 
-#define MEU_ADDR 0x01
+#define MEU_ADDR 0x02
 #define MASTER_ADDR 0x0F
 
 #define PIN_420 12
@@ -97,19 +97,19 @@ void loop() {
       break;
 
     case RECEBE_MSG:
-      Serial.println("Estado: RECEBE_MSG");
+//      Serial.println("Estado: RECEBE_MSG");
       flag = recebeMensagem(&addr, &opcode, &dado);     // Análise da mensagem recebida (retorna addr, opcode, dado e flag)
-      Serial.print("flag");
-      Serial.println(flag, HEX);
-
-      Serial.print("addr");
-      Serial.println(addr, HEX);
-
-      Serial.print("opcode");
-      Serial.println(opcode, HEX);
-
-      Serial.print("dado");
-      Serial.println(dado, HEX);
+//      Serial.print("flag");
+//      Serial.println(flag, HEX);
+//
+//      Serial.print("addr");
+//      Serial.println(addr, HEX);
+//
+//      Serial.print("opcode");
+//      Serial.println(opcode, HEX);
+//
+//      Serial.print("dado");
+//      Serial.println(dado, HEX);
       if (flag)                                         // Se houver alguma flag de erro na mensagem:
         estado = ATUALIZA_BUFFER_ERRO;                  // é atribuído ATUALIZA_BUFFER_ERRO ao objeto estado
       else                                              // Se não há erro na mensagem:
@@ -182,16 +182,7 @@ void loop() {
       estado = ATUALIZA_BUFFER_ERRO;
       break;
   }
-  delay(10);
-
-  //  Serial.print("flag ");
-  //  Serial.println(flag, DEC);
-  //  Serial.print("addr ");
-  //  Serial.println(addr, HEX);
-  //  Serial.print("opcode ");
-  //  Serial.println(opcode, HEX);
-  //  Serial.print("dado ");
-  //  Serial.println(dado, HEX);
+  delay(5);
 }
 
 /*=========================== FUNCOES AUXILIARES ============================*/
