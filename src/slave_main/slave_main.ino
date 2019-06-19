@@ -8,7 +8,7 @@
 
 /*================================ CONSTANTES ===============================*/
 
-#define MEU_ADDR 0x02
+#define MEU_ADDR 0x01
 #define MASTER_ADDR 0x0F
 
 #define PIN_420 12
@@ -119,13 +119,15 @@ void loop() {
     case ATUALIZA_SP:                                   // Se estado
       Serial.println("Estado: ATUALIZA_SP");
       set_point = dado;
-      estado = AGUARDANDO;
+      dado = 1;
+      estado = RESPONDE;
       break;
 
     case ATUALIZA_SENSOR:
       Serial.println("Estado: ATUALIZA_SENSOR");
       sensor = dado;
-      estado = AGUARDANDO;
+      dado = 1;
+      estado = RESPONDE;
       break;
 
     case VERIFICA_SP:
